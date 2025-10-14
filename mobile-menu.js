@@ -9,7 +9,7 @@
   const config = {
     logoSrc: 'img/logo.png',
     menuIconSrc: 'img/menu.png',
-    closeIconSrc: 'img/x.png',
+    arrowIconSrc: 'img/arrow.png',
     menuItems: [
       { text: 'Funding Solutions', href: '#funding-solutions' },
       { text: 'How It Works', href: '#how-it-works' },
@@ -78,40 +78,30 @@
 
     .wfm-mobile-overlay {
       position: absolute;
-      top: 26px;
+      top: 37px;
       left: 0;
       right: 0;
-      padding-top: 63px;
+      height: 0;
       background: #ffffff;
       border: 1px solid #A1D7EE;
       border-radius: 42px;
       border-top-left-radius: 0;
       border-top-right-radius: 0;
       border-top: none;
-      z-index: 10000;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-100%);
-      transition: transform 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
+      z-index: 9998;
+      transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
     }
 
     .wfm-mobile-overlay.is-open {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
+      height: 508px;
     }
 
     .wfm-mobile-overlay__inner {
-      height: 100%;
-      padding: 30px 20px;
+      height: 508px;
+      padding: 63px 20px 30px 20px;
       display: flex;
       flex-direction: column;
-    }
-
-    .wfm-mobile-overlay__header {
-      display: none; /* Скрываем дублирующий хедер в дропдауне */
     }
 
     .wfm-mobile-overlay__logo {
@@ -223,8 +213,17 @@
 
 
     /* Анимация появления элементов меню */
+    .wfm-mobile-overlay__inner {
+      opacity: 0;
+      transition: opacity 0.3s ease 0.1s;
+    }
+
+    .wfm-mobile-overlay.is-open .wfm-mobile-overlay__inner {
+      opacity: 1;
+    }
+
     .wfm-mobile-overlay.is-open .wfm-mobile-nav__item {
-      animation: slideInLeft 0.4s ease forwards;
+      animation: fadeInUp 0.4s ease forwards;
       opacity: 0;
     }
 
@@ -235,14 +234,14 @@
     .wfm-mobile-overlay.is-open .wfm-mobile-nav__item:nth-child(5) { animation-delay: 0.3s; }
     .wfm-mobile-overlay.is-open .wfm-mobile-nav__item:nth-child(6) { animation-delay: 0.35s; }
 
-    @keyframes slideInLeft {
+    @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateX(-20px);
+        transform: translateY(10px);
       }
       to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
       }
     }
 
@@ -305,16 +304,6 @@
       const overlayInner = document.createElement('div');
       overlayInner.className = 'wfm-mobile-overlay__inner';
 
-      // Шапка оверлея
-      const overlayHeader = document.createElement('div');
-      overlayHeader.className = 'wfm-mobile-overlay__header';
-      overlayHeader.innerHTML = `
-        <img src="${config.logoSrc}" alt="WFM Logo" class="wfm-mobile-overlay__logo">
-        <button class="wfm-mobile-overlay__close" aria-label="Close menu">
-          <img src="${config.closeIconSrc}" alt="Close">
-        </button>
-      `;
-
       // Навигация
       const nav = document.createElement('nav');
       nav.className = 'wfm-mobile-nav';
@@ -343,7 +332,7 @@
       cta.innerHTML = `
         <a href="#apply" class="wfm-mobile-cta__button">
           Apply Now
-          <img src="img/arrow.png" alt="Arrow" class="wfm-mobile-cta__arrow">
+          <img src="${config.arrowIconSrc}" alt="Arrow" class="wfm-mobile-cta__arrow">
         </a>
       `;
 
@@ -379,7 +368,6 @@
 
       // Собираем всё вместе
       nav.appendChild(cta);
-      overlayInner.appendChild(overlayHeader);
       overlayInner.appendChild(nav);
       overlayInner.appendChild(contact);
       overlayInner.appendChild(social);
