@@ -245,6 +245,11 @@
       }
     }
 
+    body.wfm-menu-open > *:not(#mobile-menu-container) {
+      filter: blur(5px);
+      transition: filter 0.3s ease;
+    }
+
     /* Адаптивность для планшетов и больших экранов */
     @media (min-width: 768px) {
       .wfm-mobile-menu {
@@ -419,11 +424,13 @@
     openMenu() {
       this.isOpen = true;
       this.overlay.classList.add('is-open');
+      document.body.classList.add('wfm-menu-open');
     }
 
     closeMenu() {
       this.isOpen = false;
       this.overlay.classList.remove('is-open');
+      document.body.classList.remove('wfm-menu-open');
     }
 
     // Публичный API
@@ -446,7 +453,6 @@
 
       // Очищаем body
       document.body.classList.remove('wfm-menu-open');
-      document.body.style.top = '';
     }
 
     // Обновление конфигурации
