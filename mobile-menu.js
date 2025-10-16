@@ -24,7 +24,8 @@
       { icon: 'img/inst.png', href: 'https://instagram.com', alt: 'Instagram' },
       { icon: 'img/x.png', href: 'https://twitter.com', alt: 'X (Twitter)' },
       { icon: 'img/ln.png', href: 'https://linkedin.com', alt: 'LinkedIn' }
-    ]
+    ],
+    blurContentSelector: null
   };
 
   // Стили для меню
@@ -245,9 +246,11 @@
       }
     }
 
-    body.wfm-menu-open > *:not(#mobile-menu-container) {
+
+    .wfm-blur-content {
       filter: blur(5px);
       transition: filter 0.3s ease;
+      pointer-events: none;
     }
 
     /* Адаптивность для планшетов и больших экранов */
@@ -260,7 +263,7 @@
 
   // Класс мобильного меню
   class MobileMenu {
-    constructor(containerSelector) {
+    constructor(containerSelector, options = {}) {
       this.container = typeof containerSelector === 'string'
         ? document.querySelector(containerSelector)
         : containerSelector;
@@ -270,7 +273,17 @@
         return;
       }
 
+      if (options.blurContentSelector) {
+        config.blurContentSelector = options.blurContentSelector;
+      }
+
       this.isOpen = false;
+      this.blurElement = null;
+      
+      if (config.blurContentSelector) {
+        this.blurElement = document.querySelector(config.blurContentSelector);
+      }
+
       this.init();
     }
 
@@ -425,12 +438,20 @@
       this.isOpen = true;
       this.overlay.classList.add('is-open');
       document.body.classList.add('wfm-menu-open');
+      
+      if (this.blurElement) {
+        this.blurElement.classList.add('wfm-blur-content');
+      }
     }
 
     closeMenu() {
       this.isOpen = false;
       this.overlay.classList.remove('is-open');
       document.body.classList.remove('wfm-menu-open');
+      
+      if (this.blurElement) {
+        this.blurElement.classList.remove('wfm-blur-content');
+      }
     }
 
     // Публичный API
@@ -450,9 +471,10 @@
       if (this.overlay) {
         this.overlay.remove();
       }
-
-      // Очищаем body
       document.body.classList.remove('wfm-menu-open');
+      if (this.blurElement) {
+        this.blurElement.classList.remove('wfm-blur-content');
+      }
     }
 
     // Обновление конфигурации
